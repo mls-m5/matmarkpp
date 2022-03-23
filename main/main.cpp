@@ -9,7 +9,14 @@ auto header = R"_(
 <html>
 <head>
 <style>
-code{ white-space: pre;}
+code {
+   white-space: pre;
+   background: rgba(0,0,0,.3);
+}
+
+code.block {
+   display: block;
+}
 </style>
 </head>
 </body>

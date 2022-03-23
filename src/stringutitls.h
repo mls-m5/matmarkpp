@@ -1,13 +1,14 @@
 #pragma once
 
 #include <string>
+#include <vector>
 
 template <typename T>
-bool startsWith(const std::string &a, const T &b) {
+inline bool startsWith(const std::string &a, const T &b) {
     return a.rfind(b, 0) != std::string::npos;
 }
 
-bool endsWith(const std::string &stack, const std::string &needle) {
+inline bool endsWith(const std::string &stack, const std::string &needle) {
     return stack.find(needle, stack.size() - needle.size()) !=
            std::string::npos;
 }
@@ -23,4 +24,25 @@ inline std::string replaceAll(std::string str,
             to.length(); // Handles case where 'to' is a substring of 'from'
     }
     return str;
+}
+
+inline std::string escape(std::string str) {
+    str = replaceAll(std::move(str), "<", "&lt;");
+    str = replaceAll(std::move(str), ">", "&gt;");
+    return str;
+}
+
+inline std::vector<std::string> split(std::string_view str, char delim) {
+    auto ret = std::vector<std::string>{};
+
+    for (size_t f; (f = str.find(delim)) != std::string::npos;
+         str = str.substr(f + 1)) {
+        ret.emplace_back(str.substr(0, f));
+    }
+
+    if (!str.empty()) {
+        ret.emplace_back(str);
+    }
+
+    return ret;
 }

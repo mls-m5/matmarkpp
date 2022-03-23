@@ -14,14 +14,15 @@ Markdown in c++ (Obsidian.md flavor)
 - [x] Unordered lists
 - [ ] Ordered lists
 - [ ] Standard markdown links
+- [ ] Standard markdown images
 - [x] Tables
 - [x] Check lists
    - [ ] Nested check lists
-- [ ] inline code
+- [x] `inline code`
 - [x] code blocks
-- [ ] Bold
-- [ ] Italic
-- [ ] Strikethrough
+- [ ] **Bold**
+- [ ] *Italic*
+- [ ] ~~Strikethrough~~
 
 
 # Project structures

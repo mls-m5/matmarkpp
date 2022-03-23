@@ -1,6 +1,8 @@
 #include "matmark/matmark.h"
+#include "code.h"
 #include "matmark/html.h"
 #include "stringutitls.h"
+#include "tables.h"
 #include <sstream>
 #include <vector>
 
@@ -215,136 +217,6 @@ void lists(Lines &lines) {
     haltList(lines.back());
 }
 
-void tables(std::vector<std::string> &lines) {
-    if (lines.empty()) {
-        return;
-    }
-
-    auto countBars = [](std::string_view line) {
-        if (line.empty()) {
-            return 0l;
-        }
-        if (line.front() != '|' || line.back() != '|') {
-            return 0l;
-        }
-        return std::count(line.begin(), line.end(), '|');
-    };
-
-    auto splitContent = [](std::string_view line) {
-        auto ret = std::vector<std::string>{};
-        for (size_t prev = 0, f = 0;
-             (f = line.find('|', prev + 1)) != std::string::npos;
-             prev = f) {
-            ret.emplace_back(line.substr(prev + 1, f - prev - 1));
-        }
-        return ret;
-    };
-
-    auto createHeader = [splitContent](std::string &line1, std::string &line2) {
-        auto content = splitContent(line1);
-        line1 = "<table><tr>";
-        line2 = "";
-        for (auto &c : content) {
-            line1 += "<td>" + c + "</td>";
-        }
-        line1 += "</tr>";
-    };
-
-    auto isHeadingUnderline = [](std::string_view line) {
-        // Todo: Do real check to verify pattern |--|--| etc
-        return line.find('-') != std::string::npos;
-    };
-
-    auto createRow = [&](std::string &line) {
-        auto content = splitContent(line);
-        line = "<tr>";
-        for (auto &c : content) {
-            line += "<td>" + c + "</td>";
-        }
-        line += "</tr>";
-    };
-
-    auto createTable = [&lines, createHeader, createRow](size_t begin,
-                                                         size_t end) {
-        createHeader(lines.at(begin - 2), lines.at(begin - 1));
-        for (size_t i = begin; i < end; ++i) {
-            auto &line = lines.at(i);
-            createRow(line);
-        }
-        lines.at(end - 1) += "</table>";
-    };
-
-    auto *previous = &lines.front();
-    auto *previous2 = previous;
-    bool isTable = false;
-
-    int tableStart = 0;
-
-    for (size_t i = 0; i < lines.size();
-         previous2 = previous, previous = &lines.at(i), ++i) {
-        auto &line = lines.at(i);
-        auto bars = countBars(line);
-
-        if (!bars) {
-            if (isTable) {
-                createTable(tableStart, i + 1);
-                isTable = false;
-            }
-            continue;
-        }
-
-        if (bars != countBars(*previous) || bars != countBars(*previous2)) {
-            continue;
-        }
-
-        isTable = true;
-
-        if (isHeadingUnderline(*previous)) {
-            tableStart = i;
-        }
-    }
-
-    if (isTable) {
-        createTable(tableStart, lines.size());
-    }
-}
-
-std::string escape(std::string str) {
-    str = replaceAll(std::move(str), "<", "&lt;");
-    str = replaceAll(std::move(str), ">", "&gt;");
-    return str;
-}
-
-void codeBlocks(std::vector<std::string> &lines) {
-    for (size_t i = 0; i < lines.size(); ++i) {
-        auto &line = lines.at(i);
-        if (!startsWith(line, "```")) {
-            continue;
-        }
-
-        ++i;
-        auto begin = i;
-
-        auto end = [&i, &lines] {
-            for (; i < lines.size(); ++i) {
-                auto &line = lines.at(i);
-                line = escape(line);
-                if (startsWith(line, "```")) {
-                    return i;
-                    break;
-                }
-            }
-            return 0ul;
-        }();
-
-        if (end) {
-            line = "";
-            lines.at(begin).insert(0, "<code>");
-            lines.at(i) = "</code>";
-        }
-    }
-}
-
 } // namespace
 
 void md2html(std::istream &in,
@@ -352,7 +224,8 @@ void md2html(std::istream &in,
              const MarkdownSettings &settings) {
     auto lines = splitStream(in);
 
-    codeBlocks(lines);
+    matmark::codeBlocks(lines);
+    matmark::inlineCode(lines);
     replaceHeaders(lines);
     horizontalLines(lines);
     checkBoxes(lines);
@@ -360,11 +233,12 @@ void md2html(std::istream &in,
     images(lines, settings);
     links(lines, settings);
     lists(lines);
-    tables(lines);
+    matmark::tables(lines);
 
     bool disableP = false;
     for (auto &line : lines) {
-        if (!disableP && line.find("<code>") != std::string::npos) {
+        if (!disableP &&
+            line.find("<code class=\"block\"") != std::string::npos) {
             disableP = true;
         }
         else if (disableP && line.find("</code>") != std::string::npos) {

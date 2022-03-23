@@ -6,6 +6,8 @@ project(matmarkpp)
 add_library(
     matmarklib
     src/matmark.cpp
+    src/tables.cpp
+    src/code.cpp
     )
 
 target_include_directories(
