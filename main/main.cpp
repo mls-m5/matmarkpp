@@ -4,6 +4,17 @@
 
 void open(std::filesystem::path path);
 
+auto header = R"_(
+
+<html>
+<head>
+<style>
+code{ white-space: pre;}
+</style>
+</head>
+</body>
+)_";
+
 int main(int argc, char *argv[]) {
     auto file = std::ifstream{"README.md"};
 
@@ -14,6 +25,8 @@ int main(int argc, char *argv[]) {
 
     {
         auto ofile = std::ofstream{"testoutput.html"};
+
+        ofile << header;
         md2html(file, ofile);
     }
 

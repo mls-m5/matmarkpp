@@ -18,7 +18,10 @@ Markdown in c++ (Obsidian.md flavor)
 - [x] Check lists
    - [ ] Nested check lists
 - [ ] inline code
-- [ ] code blocks
+- [x] code blocks
+- [ ] Bold
+- [ ] Italic
+- [ ] Strikethrough
 
 
 # Project structures
@@ -41,7 +44,23 @@ Markdown in c++ (Obsidian.md flavor)
 ![[img.png]]
 
 ### A small table
+
 |  left column  |  right column   |
 | ------------- | --------------- |
 | value 1       | value 2         |
 | value 3       | value 4         |
+
+### Code blocks
+
+Test with `inline code` and then a code block.
+
+```c++
+int main() {
+   std::cout << "hello there\n" << std::endl;
+}
+```
+
+Or raw html
+```html
+   <div><b>hello</b></div>
+```

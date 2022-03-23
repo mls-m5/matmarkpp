@@ -232,7 +232,6 @@ void tables(std::vector<std::string> &lines) {
 
     auto splitContent = [](std::string_view line) {
         auto ret = std::vector<std::string>{};
-        //        line.remove_prefix(1);
         for (size_t prev = 0, f = 0;
              (f = line.find('|', prev + 1)) != std::string::npos;
              prev = f) {
@@ -310,6 +309,42 @@ void tables(std::vector<std::string> &lines) {
     }
 }
 
+std::string escape(std::string str) {
+    str = replaceAll(std::move(str), "<", "&lt;");
+    str = replaceAll(std::move(str), ">", "&gt;");
+    return str;
+}
+
+void codeBlocks(std::vector<std::string> &lines) {
+    for (size_t i = 0; i < lines.size(); ++i) {
+        auto &line = lines.at(i);
+        if (!startsWith(line, "```")) {
+            continue;
+        }
+
+        ++i;
+        auto begin = i;
+
+        auto end = [&i, &lines] {
+            for (; i < lines.size(); ++i) {
+                auto &line = lines.at(i);
+                line = escape(line);
+                if (startsWith(line, "```")) {
+                    return i;
+                    break;
+                }
+            }
+            return 0ul;
+        }();
+
+        if (end) {
+            line = "";
+            lines.at(begin).insert(0, "<code>");
+            lines.at(i) = "</code>";
+        }
+    }
+}
+
 } // namespace
 
 void md2html(std::istream &in,
@@ -317,6 +352,7 @@ void md2html(std::istream &in,
              const MarkdownSettings &settings) {
     auto lines = splitStream(in);
 
+    codeBlocks(lines);
     replaceHeaders(lines);
     horizontalLines(lines);
     checkBoxes(lines);
@@ -326,8 +362,17 @@ void md2html(std::istream &in,
     lists(lines);
     tables(lines);
 
+    bool disableP = false;
     for (auto &line : lines) {
-        if (line.find("<li>") == std::string::npos && line.find("<td>")) {
+        if (!disableP && line.find("<code>") != std::string::npos) {
+            disableP = true;
+        }
+        else if (disableP && line.find("</code>") != std::string::npos) {
+            disableP = false;
+        }
+
+        if (!disableP && line.find("<li>") == std::string::npos &&
+            line.find("<td>") == std::string::npos) {
             out << "<p>" << line << "</p>\n";
         }
         else {
