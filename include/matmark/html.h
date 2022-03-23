@@ -7,6 +7,7 @@ inline std::string createLink(std::string file) {
     return "<p><a href=\"commonplace/" + file + "\">" + file + "</a></p>";
 }
 
+// Create a tag with arguments, content as arguments
 template <typename... Args>
 std::string t(std::string tagName, const Args &...args) {
     auto ss = std::ostringstream{};
@@ -16,6 +17,7 @@ std::string t(std::string tagName, const Args &...args) {
     return ss.str();
 }
 
+// Create tag with properties listed as strings
 template <typename... Args>
 std::string tp(std::string tagName,
                std::string properties,
@@ -25,4 +27,9 @@ std::string tp(std::string tagName,
     ((ss << args << "\n"), ...);
     ss << "</" << tagName << ">\n";
     return ss.str();
+}
+
+// Property tuple
+std::string p(std::string name, std::string value) {
+    return +" " + name + "=\"" + value + "\"";
 }

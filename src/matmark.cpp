@@ -107,7 +107,7 @@ void checkBoxes(Lines &lines) {
 void rawUrls(Lines &lines) {
     for (auto &line : lines) {
         if (line.rfind("http://", 0) == 0 || line.rfind("https://", 0) == 0) {
-            line = tp("a", "href=" + line, line);
+            line = tp("a", p("href", line), line);
         }
     }
 }
@@ -117,10 +117,90 @@ void images(Lines &lines, const MarkdownSettings &settings) {
     for (auto &line : lines) {
         if (startsWith(line, "![[") || endsWith(line, "]]")) {
             auto name = line.substr(3, line.size() - 5);
-            line =
-                tp("img", "src='" + settings.fileLookup(name).string() + "'");
+            line = tp("img", p("src", settings.fileLookup(name).string()));
         }
     }
+}
+
+void lists(Lines &lines) {
+    auto indentList = std::vector<int>{};
+
+    auto countSpaces = [](std::string_view line) -> int {
+        if (line.empty()) {
+            return 0ul;
+        }
+        size_t len = 0;
+        for (auto c : line) {
+            if (!isspace(c)) {
+                break;
+            }
+            ++len;
+        }
+        return len;
+    };
+
+    auto currentDepth = [&indentList]() -> int {
+        return indentList.empty() ? -1 : indentList.back();
+    };
+
+    auto haltList = [&indentList](std::string &line) {
+        for ([[maybe_unused]] auto _ : indentList) {
+            line += "</ul>";
+        }
+        indentList.clear();
+    };
+
+    auto previousSize = indentList.size();
+    auto previous = -1;
+
+    for (size_t i = 0; i < lines.size(); ++i) {
+        auto &line = lines.at(i);
+        auto &previousLine = i ? lines.at(i - 1) : line;
+        auto spaces = countSpaces(line);
+        if (spaces + 1 == line.size()) {
+            continue;
+        }
+        auto str = line.substr(spaces);
+        if (str.empty()) {
+            continue;
+        }
+
+        auto isList = (str.front() == '-' || str.front() == '*');
+
+        auto current = currentDepth();
+
+        auto size = indentList.size();
+
+        if (isList) {
+            line = str.substr(1);
+            line.insert(0, "<li>");
+            line += "</li>";
+        }
+        else {
+            haltList(previousLine);
+
+            continue;
+        }
+
+        if (spaces > current) {
+            indentList.push_back(spaces);
+            line.insert(0, "<ul>");
+        }
+        if (spaces < current) {
+            if (!indentList.empty()) {
+                indentList.pop_back();
+                indentList.back() = spaces;
+            }
+            previousLine += "</ul>";
+        }
+    }
+
+    //    if (!indentList.empty()) {
+    //        for ([[maybe_unused]] auto _ : indentList) {
+    //            lines.back() += "</ul>";
+    //        }
+    //    }
+    haltList(lines.back());
 }
 
 } // namespace
@@ -135,8 +215,14 @@ void md2html(std::istream &in,
     checkBoxes(lines);
     rawUrls(lines);
     images(lines, settings);
+    lists(lines);
 
     for (auto &line : lines) {
-        out << "<p>" << line << "</p>";
+        if (line.find("<li>") == std::string::npos) {
+            out << "<p>" << line << "</p>\n";
+        }
+        else {
+            out << line << "\n";
+        }
     }
 }
