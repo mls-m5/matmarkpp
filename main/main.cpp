@@ -2,6 +2,8 @@
 #include <fstream>
 #include <iostream>
 
+void open(std::filesystem::path path);
+
 int main(int argc, char *argv[]) {
     auto file = std::ifstream{"README.md"};
 
@@ -10,5 +12,23 @@ int main(int argc, char *argv[]) {
         std::terminate();
     }
 
-    md2html(file, std::cout);
+    {
+        auto ofile = std::ofstream{"testoutput.html"};
+        md2html(file, ofile);
+    }
+
+    open("testoutput.html");
 }
+
+#ifdef __unix__
+void open(std::filesystem::path path) {
+    std::system(("xdg-open " + path.string()).c_str());
+}
+
+#else
+void open(std::filesystem::path path) {
+    std::system(
+        ("rundll32 url.dll,FileProtocolHandler " + path.string()).c_str());
+}
+
+#endif

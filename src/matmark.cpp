@@ -150,7 +150,6 @@ void lists(Lines &lines) {
         indentList.clear();
     };
 
-    auto previousSize = indentList.size();
     auto previous = -1;
 
     for (size_t i = 0; i < lines.size(); ++i) {
@@ -168,8 +167,6 @@ void lists(Lines &lines) {
         auto isList = (str.front() == '-' || str.front() == '*');
 
         auto current = currentDepth();
-
-        auto size = indentList.size();
 
         if (isList) {
             line = str.substr(1);
@@ -195,11 +192,6 @@ void lists(Lines &lines) {
         }
     }
 
-    //    if (!indentList.empty()) {
-    //        for ([[maybe_unused]] auto _ : indentList) {
-    //            lines.back() += "</ul>";
-    //        }
-    //    }
     haltList(lines.back());
 }
 
