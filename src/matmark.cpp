@@ -94,12 +94,20 @@ void horizontalLines(Lines &lines) {
 }
 
 void checkBoxes(Lines &lines) {
+#ifdef UTF_CHECKBOX_STYLE
+    auto unchecked = "☐";
+    auto checked = "☑";
+#else
+    auto unchecked = "<input type=\"checkbox\" disabled>";
+    auto checked = "<input type=\"checkbox\" checked disabled>";
+#endif
+
     for (auto &line : lines) {
         if (line.rfind("- [ ]", 0) == 0) {
-            line.replace(0, 5, "☐");
+            line.replace(0, 5, unchecked);
         }
         else if (line.rfind("- [x]", 0) == 0) {
-            line.replace(0, 5, "☑");
+            line.replace(0, 5, checked);
         }
     }
 }

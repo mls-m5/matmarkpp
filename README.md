@@ -28,3 +28,7 @@ Markdown in c++ (Obsidian.md flavor)
 - List
 - List
    - Nested
+
+[[README.md]]
+
+![[img.png]]
