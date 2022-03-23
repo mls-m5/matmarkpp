@@ -7,13 +7,14 @@ Markdown in c++ (Obsidian.md flavor)
 - [x] Headers
 - [x] "![[]]" syntax for images
   - [ ] Support for non full line
+- [ ] Include other md files with "![[]]"
 - [x] "[[]]" syntax links
   - [ ] Support for non full line links
 - [x] Horizontal lines
 - [x] Unordered lists
 - [ ] Ordered lists
 - [ ] Standard markdown links
-- [ ] Tables
+- [x] Tables
 - [x] Check lists
    - [ ] Nested check lists
 - [ ] inline code
@@ -38,3 +39,9 @@ Markdown in c++ (Obsidian.md flavor)
 [[README.md]]
 
 ![[img.png]]
+
+### A small table
+|  left column  |  right column   |
+| ------------- | --------------- |
+| value 1       | value 2         |
+| value 3       | value 4         |
