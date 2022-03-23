@@ -5,8 +5,8 @@ Markdown in c++ (Obsidian.md flavor)
 ## Implemented features
 
 - [x] Headers
-- [x] "[[]]" syntax for md
 - [x] "![[]]" syntax for images
+- [ ] "[[]]" syntax links
 - [x] Horizontal lines
 - [x] Unordered lists
 - [ ] Ordered lists

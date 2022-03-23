@@ -123,7 +123,8 @@ void rawUrls(Lines &lines) {
 void images(Lines &lines, const MarkdownSettings &settings) {
     // Obisdian syntax ![[stuff.png]]
     for (auto &line : lines) {
-        if (startsWith(line, "![[") || endsWith(line, "]]")) {
+        if (startsWith(line, "![[") && endsWith(line, "]]")) {
+            endsWith(line, "]]");
             auto name = line.substr(3, line.size() - 5);
             line = tp("img", p("src", settings.fileLookup(name).string()));
         }

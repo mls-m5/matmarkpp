@@ -28,6 +28,7 @@ add_executable(
 file(
     COPY
     README.md
+    img.png
     DESTINATION
     .
     )
