@@ -6,12 +6,18 @@ Markdown in c++ (Obsidian.md flavor)
 
 - [x] Headers
 - [x] "![[]]" syntax for images
-- [ ] "[[]]" syntax links
+  - [ ] Support for non full line
+- [x] "[[]]" syntax links
+  - [ ] Support for non full line links
 - [x] Horizontal lines
 - [x] Unordered lists
 - [ ] Ordered lists
-- [ ] Standrad markdown links
+- [ ] Standard markdown links
 - [ ] Tables
+- [x] Check lists
+   - [ ] Nested check lists
+- [ ] inline code
+- [ ] code blocks
 
 
 # Project structures

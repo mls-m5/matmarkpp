@@ -131,6 +131,17 @@ void images(Lines &lines, const MarkdownSettings &settings) {
     }
 }
 
+void links(Lines &lines, const MarkdownSettings &settings) {
+    // Obisdian syntax [[stuff.md]]
+    for (auto &line : lines) {
+        if (startsWith(line, "[[") && endsWith(line, "]]")) {
+            endsWith(line, "]]");
+            auto name = line.substr(2, line.size() - 4);
+            line = tp("a", p("href", settings.linkLookup(name).string()), name);
+        }
+    }
+}
+
 void lists(Lines &lines) {
     auto indentList = std::vector<int>{};
 
@@ -216,6 +227,7 @@ void md2html(std::istream &in,
     checkBoxes(lines);
     rawUrls(lines);
     images(lines, settings);
+    links(lines, settings);
     lists(lines);
 
     for (auto &line : lines) {
