@@ -22,7 +22,7 @@ void codeBlocks(std::vector<std::string> &lines) {
                     break;
                 }
             }
-            return 0ul;
+            return size_t{0};
         }();
 
         if (end) {

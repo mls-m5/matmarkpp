@@ -5,12 +5,12 @@ namespace matmark {
 
 namespace {
 
-auto countBars(std::string_view line) {
+auto countBars(std::string_view line) -> size_t {
     if (line.empty()) {
         return 0l;
     }
     if (line.front() != '|' || line.back() != '|') {
-        return 0l;
+        return 0;
     }
     return std::count(line.begin(), line.end(), '|');
 };
@@ -27,12 +27,12 @@ auto splitContent(std::string_view line) {
 
 auto createHeader(std::string &line1, std::string &line2) {
     auto content = splitContent(line1);
-    line1 = "<table><tr>";
+    line1 = "<table><thead><tr>";
     line2 = "";
     for (auto &c : content) {
-        line1 += "<td>" + c + "</td>";
+        line1 += "<th>" + c + "</th>";
     }
-    line1 += "</tr>";
+    line1 += "</tr></thead><tbody>";
 };
 
 auto isHeadingUnderline(std::string_view line) {
@@ -56,7 +56,7 @@ auto createTable =
             auto &line = lines.at(i);
             createRow(line);
         }
-        lines.at(end - 1) += "</table>";
+        lines.at(end - 1) += "</tbody></table>";
     };
 
 } // namespace
