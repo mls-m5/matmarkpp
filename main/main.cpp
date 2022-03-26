@@ -11,12 +11,28 @@ auto header = R"_(
 <style>
 code {
    white-space: pre;
-   background: rgba(0,0,0,.3);
+   background: rgba(0,0,100,.3);
 }
 
 code.block {
    display: block;
 }
+
+th {
+   background: rgba(0,0,100,.3);
+   padding: 4px;
+}
+
+td {
+   padding: 4px;
+}
+
+table {
+   border-spacing:0;
+   border: 1px solid black;
+}
+
+
 </style>
 </head>
 </body>
