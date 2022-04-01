@@ -23,6 +23,7 @@ Markdown in c++ (Obsidian.md flavor)
 - [ ] **Bold**
 - [ ] *Italic*
 - [ ] ~~Strikethrough~~
+- [ ] #tags
 
 
 # Project structures

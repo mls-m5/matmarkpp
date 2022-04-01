@@ -30,6 +30,6 @@ std::string tp(std::string tagName,
 }
 
 // Property tuple
-std::string p(std::string name, std::string value) {
+inline std::string p(std::string name, std::string value) {
     return +" " + name + "=\"" + value + "\"";
 }

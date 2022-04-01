@@ -3,7 +3,7 @@
 
 namespace matmark {
 
-void codeBlocks(std::vector<std::string> &lines) {
+void codeBlocks(Lines &lines) {
     for (size_t i = 0; i < lines.size(); ++i) {
         auto &line = lines.at(i);
         if (!startsWith(line, "```")) {
@@ -57,7 +57,7 @@ void inlineCode(std::string &line) {
 
 } // namespace
 
-void inlineCode(std::vector<std::string> &lines) {
+void inlineCode(Lines &lines) {
     for (auto &line : lines) {
         inlineCode(line);
     }

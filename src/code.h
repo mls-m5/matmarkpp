@@ -1,11 +1,10 @@
 #pragma once
 
-#include <string>
-#include <vector>
+#include "lines.h"
 
 namespace matmark {
 
-void codeBlocks(std::vector<std::string> &lines);
-void inlineCode(std::vector<std::string> &lines);
+void codeBlocks(Lines &lines);
+void inlineCode(Lines &lines);
 
 } // namespace matmark

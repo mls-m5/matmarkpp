@@ -1,5 +1,6 @@
 #include "matmark/matmark.h"
 #include "code.h"
+#include "lines.h"
 #include "matmark/html.h"
 #include "stringutitls.h"
 #include "tables.h"
@@ -8,12 +9,12 @@
 
 // More info here: https://www.markdownguide.org/basic-syntax/
 
+using namespace matmark;
+
 namespace {
 
-using Lines = std::vector<std::string>;
-
 Lines splitStream(std::istream &in) {
-    auto lines = std::vector<std::string>{};
+    auto lines = Lines{};
     for (std::string line; getline(in, line);) {
         lines.push_back(line);
     }

@@ -1,11 +1,10 @@
-#include "lines.h"
+#pragma once
+
 #include <string>
 #include <vector>
 
-#pragma once
-
 namespace matmark {
 
-void tables(Lines &lines);
+using Lines = std::vector<std::string>;
 
 }

@@ -16,7 +16,7 @@ auto countBars(std::string_view line) -> size_t {
 };
 
 auto splitContent(std::string_view line) {
-    auto ret = std::vector<std::string>{};
+    auto ret = Lines{};
     for (size_t prev = 0, f = 0;
          (f = line.find('|', prev + 1)) != std::string::npos;
          prev = f) {
@@ -49,19 +49,18 @@ auto createRow(std::string &line) {
     line += "</tr>";
 };
 
-auto createTable =
-    [](std::vector<std::string> &lines, size_t begin, size_t end) {
-        createHeader(lines.at(begin - 2), lines.at(begin - 1));
-        for (size_t i = begin; i < end; ++i) {
-            auto &line = lines.at(i);
-            createRow(line);
-        }
-        lines.at(end - 1) += "</tbody></table>";
-    };
+auto createTable = [](Lines &lines, size_t begin, size_t end) {
+    createHeader(lines.at(begin - 2), lines.at(begin - 1));
+    for (size_t i = begin; i < end; ++i) {
+        auto &line = lines.at(i);
+        createRow(line);
+    }
+    lines.at(end - 1) += "</tbody></table>";
+};
 
 } // namespace
 
-void tables(std::vector<std::string> &lines) {
+void tables(Lines &lines) {
     if (lines.empty()) {
         return;
     }
