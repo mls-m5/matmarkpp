@@ -136,6 +136,7 @@ void images(Lines &lines, const MarkdownSettings &settings) {
 
 void links(Lines &lines, const MarkdownSettings &settings) {
     // Obisdian syntax [[stuff.md]]
+    // But only full line versions
     for (auto &line : lines) {
         if (startsWith(line, "[[") && endsWith(line, "]]")) {
             endsWith(line, "]]");
