@@ -4,20 +4,20 @@ cmake_minimum_required(VERSION 3.22)
 project(matmarkpp)
 
 add_library(
-    matmarklib
+    matmarkpp
     src/matmark.cpp
     src/tables.cpp
     src/code.cpp
     )
 
 target_include_directories(
-    matmarklib
+    matmarkpp
     PUBLIC
     include
     )
 
 target_compile_features(
-    matmarklib
+    matmarkpp
     PUBLIC
     cxx_std_17
     )
@@ -38,5 +38,5 @@ file(
 target_link_libraries(
     matmark
     PUBLIC
-    matmarklib
+    matmarkpp
     )
