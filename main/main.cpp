@@ -50,7 +50,7 @@ int main(int argc, char *argv[]) {
         auto ofile = std::ofstream{"testoutput.html"};
 
         ofile << header;
-        md2html(file, ofile);
+        matmark::md2html(file, ofile);
     }
 
     open("testoutput.html");

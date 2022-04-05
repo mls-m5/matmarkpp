@@ -9,7 +9,7 @@
 
 // More info here: https://www.markdownguide.org/basic-syntax/
 
-using namespace matmark;
+namespace matmark {
 
 namespace {
 
@@ -38,46 +38,17 @@ bool onlyChar(const std::string &s, char expected) {
     return res;
 }
 
-/// For header of type `# heading`
-/// @return 0 if not header, level of header otherwise
-int isHeading(const std::string line) {
-    if (line.empty()) {
-        return 0;
-    }
-
-    if (line.front() != '#') {
-        return 0;
-    }
-
-    for (size_t i = 0; i < line.size(); ++i) {
-        auto c = line.at(i);
-        if (c == '#') {
-            continue;
-        }
-        else if (isspace(c)) {
-            return i;
-        }
-        else {
-            return 0;
-        }
-    }
-
-    return 0;
-}
-
 void replaceHeaders(Lines &lines) {
     for (size_t i = 1; i < lines.size(); ++i) {
-        if (lines.at(i - 1).empty()) {
-            continue;
-        }
-
-        if (onlyChar(lines.at(i), '=')) {
-            lines.at(i - 1) = t("h1", lines.at(i - 1));
-            lines.erase(lines.begin() + i);
-        }
-        else if (onlyChar(lines.at(i), '-')) {
-            lines.at(i - 1) = t("h2", lines.at(i - 1));
-            lines.erase(lines.begin() + i);
+        if (auto h = isHeading(lines.at(i - 1), lines.at(i))) {
+            if (h == 1) {
+                lines.at(i - 1) = t("h1", lines.at(i - 1));
+                lines.erase(lines.begin() + i);
+            }
+            else if (h == 2) {
+                lines.at(i - 1) = t("h2", lines.at(i - 1));
+                lines.erase(lines.begin() + i);
+            }
         }
     }
 
@@ -256,3 +227,46 @@ void md2html(std::istream &in,
         }
     }
 }
+
+int isHeading(std::string_view line) {
+    if (line.empty()) {
+        return 0;
+    }
+
+    if (line.front() != '#') {
+        return 0;
+    }
+
+    for (size_t i = 0; i < line.size(); ++i) {
+        auto c = line.at(i);
+        if (c == '#') {
+            continue;
+        }
+        else if (isspace(c)) {
+            return i;
+        }
+        else {
+            return 0;
+        }
+    }
+
+    return 0;
+}
+
+int isHeading(std::string_view lineBefore, std::string lineAfter) {
+    if (lineBefore.empty()) {
+        return 0;
+    }
+
+    if (onlyChar(lineAfter, '=')) {
+        return 1;
+    }
+
+    if (onlyChar(lineAfter, '-')) {
+        return 2;
+    }
+
+    return 0;
+}
+
+} // namespace matmark
