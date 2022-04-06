@@ -5,7 +5,18 @@ namespace matmark {
 
 namespace {
 
+std::string_view stripView(std::string_view line) {
+    while (!line.empty() && isspace(line.front())) {
+        line.remove_prefix(1);
+    }
+    while (!line.empty() && isspace(line.back())) {
+        line.remove_suffix(1);
+    }
+    return line;
+}
+
 auto countBars(std::string_view line) -> size_t {
+    line = stripView(line);
     if (line.empty()) {
         return 0l;
     }
@@ -37,6 +48,11 @@ auto createHeader(std::string &line1, std::string &line2) {
 
 auto isHeadingUnderline(std::string_view line) {
     // Todo: Do real check to verify pattern |--|--| etc
+    for (auto c : line) {
+        if (!isspace(c) && c != '-' && c != '|' && c != ':') {
+            return false;
+        }
+    }
     return line.find('-') != std::string::npos;
 };
 
