@@ -4,6 +4,7 @@
 #include "matmark/html.h"
 #include "stringutitls.h"
 #include "tables.h"
+#include <regex>
 #include <sstream>
 #include <vector>
 
@@ -95,6 +96,10 @@ void rawUrls(Lines &lines) {
 }
 
 void images(Lines &lines, const MarkdownSettings &settings) {
+    static auto re = std::regex{"![\\[](.*)[\\]][(](.*)[)]"};
+
+    std::smatch match;
+
     // Obisdian syntax ![[stuff.png]]
     for (auto &line : lines) {
         if (startsWith(line, "![[") && endsWith(line, "]]")) {
@@ -102,17 +107,28 @@ void images(Lines &lines, const MarkdownSettings &settings) {
             auto name = line.substr(3, line.size() - 5);
             line = tp("img", p("src", settings.fileLookup(name).string()));
         }
+        if (std::regex_match(line, match, re)) {
+            line = tp("img", p("src", match[1]));
+        }
     }
 }
 
 void links(Lines &lines, const MarkdownSettings &settings) {
+    static auto re = std::regex{"[\\[](.*)[\\]][(](.*)[)]"};
+
     // Obisdian syntax [[stuff.md]]
     // But only full line versions
+
+    std::smatch match;
+
     for (auto &line : lines) {
         if (startsWith(line, "[[") && endsWith(line, "]]")) {
             endsWith(line, "]]");
             auto name = line.substr(2, line.size() - 4);
             line = tp("a", p("href", settings.linkLookup(name).string()), name);
+        }
+        if (std::regex_match(line, match, re)) {
+            line = tp("a", p("href", match[2]), match[1]);
         }
     }
 }
