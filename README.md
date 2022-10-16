@@ -13,8 +13,8 @@ Markdown in c++ (Obsidian.md flavor)
 - [x] Horizontal lines
 - [x] Unordered lists
 - [ ] Ordered lists
-- [ ] Standard markdown links
-- [ ] Standard markdown images
+- [x] Standard markdown links
+- [x] Standard markdown images
 - [x] Tables
 - [x] Check lists
    - [ ] Nested check lists
@@ -42,8 +42,10 @@ Markdown in c++ (Obsidian.md flavor)
    - Nested
 
 [[README.md]]
+[Normal link](README.md)
 
 ![[img.png]]
+![normal image](img.png)
 
 ### A small table
 
